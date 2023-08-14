@@ -62,7 +62,7 @@ void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
   PTL();
 }
 
-// #define WALK  //let the robot move its body to follow people rather than sitting at the original position \
+#define WALK  //let the robot move its body to follow people rather than sitting at the original position \
               // it works the best on the table so the robot doesn't need to loop upward.
 void cameraBehavior(int xCoord, int yCoord, int width) {
   showRecognitionResult(xCoord, yCoord, width);
@@ -73,11 +73,13 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
     widthCounter = 0;
   if (width < 25 && width != 16) {                                                                      //16 maybe a noise signal
     tQueue->addTask('k', currentX < -15 ? "wkR" : (currentX > 15 ? "wkL" : "wkF"), (50 - width) * 50);  //walk towards you
+    tQueue->addTask('k', "phR");
     tQueue->addTask('k', "sit");
     tQueue->addTask('i', "");
     currentX = 0;
   } else if (widthCounter > 2) {
     tQueue->addTask('k', "bk", 1000);  //the robot will walk backward if you get too close!
+    tQueue->addTask('k', "bdF");
     tQueue->addTask('k', "sit");
     tQueue->addTask('i', "");
     widthCounter = 0;

@@ -1,3 +1,12 @@
+#include <MuVisionSensor.h>
+#include <MuVisionSensor3_AT.h>
+#include <mu_uart_interface.h>
+#include <mu_vision_sensor_i2c_hw_interface.h>
+#include <mu_vision_sensor_i2c_interface.h>
+#include <mu_vision_sensor_interface.h>
+#include <mu_vision_sensor_type.h>
+#include <mu_vision_sensor_uart_interface.h>
+
 /*
    The driver for OpenCat, runs on ATmega328P-based NyBoard (as Arduino Uno).
    Compatible with Petoi Nybble, Bittle, and many other 8 or 12 DoF quadruped robots.
@@ -48,9 +57,9 @@
 
 // #define NyBoard_V0_1
 // #define NyBoard_V0_2
-// #define NyBoard_V1_0
+ #define NyBoard_V1_0
 // #define NyBoard_V1_1
-#define NyBoard_V1_2
+//#define NyBoard_V1_2
 
 // you can also activate the following modes (they will disable the gyro to save programming space)
 // allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
@@ -65,7 +74,7 @@
 // #define DOUBLE_LIGHT  //for double light sensor
 // #define DOUBLE_INFRARED_DISTANCE  //for double infrared distance sensor
 // #define GESTURE  //for Gesture module
-// #define CAMERA  //for human body tracking or ball tracking using an intelligent camera
+#define CAMERA  //for human body tracking or ball tracking using an intelligent camera
 // #define GROVE_SERIAL_PASS_THROUGH  //allow analog/digital read/write GPIO pins through serial protocol
 // #define OTHER_MODULES  //uncomment this line to disable the gyroscope code to save programming resources for other modules.
 #define IR_PIN 4       // Signal Pin of IR receiver to Arduino Digital Pin 4
