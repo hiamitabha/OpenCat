@@ -163,10 +163,11 @@ MuVisionSensor *Mu;
 int skip = 1;  //, counter; //an efforts to reduce motion frequency without using delay. set skip >1 to take effect
 int i2cdelay = 3;
 long noResultTime = 0;
-MuVisionType object[] = { VISION_BODY_DETECT, VISION_BALL_DETECT };
-String objectName[] = { "body", "ball" };
+MuVisionType object[] = { VISION_BODY_DETECT, VISION_BALL_DETECT, VISION_COLOR_RECOGNITION};
+String objectName[] = { "body", "ball", "color" };
 int objectIdx = 0;
 int lastBallType;
+int lastColorType;
 bool firstConnection = true;
 
 void muCameraSetup() {
@@ -215,7 +216,7 @@ void read_MuCamera() {
     yCoord = (int)(*Mu).GetValue(object[objectIdx], kYValue);
     width = (int)(*Mu).GetValue(object[objectIdx], kWidthValue);
     // height = (int)(*Mu).GetValue(VISION_BODY_DETECT, kHeightValue);
-    if (objectIdx == 1) {
+    if (objectIdx == 1) { // Implementing logic if a ball is first detected
       int ballType = (*Mu).GetValue(object[objectIdx], kLabel);
       if (lastBallType != ballType) {
         switch ((*Mu).GetValue(object[objectIdx], kLabel)) {  // get vision result: label value
@@ -231,13 +232,54 @@ void read_MuCamera() {
         }
         lastBallType = ballType;
       }
-    }
-    cameraBehavior(xCoord, yCoord, width);
+      cameraBehavior(xCoord, yCoord, width);
+    } else if (objectIdx == 2) { // Implementing logic if color is detected
+       int color = (*Mu).GetValue(object[objectIdx], kLabel);
+       if (color != lastColorType) { 
+         switch (color) {
+           case MU_COLOR_BLACK:
+             PTLF("black");
+             break;
+           case MU_COLOR_BLUE:
+             PTLF("blue");
+             break;
+           case MU_COLOR_CYAN:
+             PTLF("cyan");
+             break;
+           case MU_COLOR_GREEN:
+             PTLF("green");
+             break;
+           case MU_COLOR_PURPLE:
+             PTLF("purple");
+             break;
+           case MU_COLOR_RED:
+             PTLF("red");
+             break;
+           case MU_COLOR_WHITE:
+             PTLF("white");
+             break;
+           case MU_COLOR_YELLOW:
+             PTLF("yellow");
+             break;
+           default:
+             PTLF("unknow color type: ");
+            break;
+         }
+         lastColorType = color;
+       }
+    } 
     FPS();
   } else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object
     (*Mu).VisionEnd(object[objectIdx]);
     objectIdx = (objectIdx + 1) % (sizeof(object) / 2);
     (*Mu).VisionBegin(object[objectIdx]);
+    if (object[objectIdx] == VISION_COLOR_RECOGNITION) {
+       (*Mu).write(VISION_COLOR_RECOGNITION, kXValue, 50);                  // set detect region center x value(0~100)
+       (*Mu).write(VISION_COLOR_RECOGNITION, kYValue, 50);                  // set detect region center y value(0~100)
+       (*Mu).write(VISION_COLOR_RECOGNITION, kWidthValue, 20);               // set detect region center width value(0~100)
+       (*Mu).write(VISION_COLOR_RECOGNITION, kHeightValue, 20);              // set detect region center height value(0~100)
+       (*Mu).CameraSetAwb(kLockWhiteBalance);                               // lock AWB
+    }
     PTL(objectName[objectIdx]);
     noResultTime = millis();
   }
