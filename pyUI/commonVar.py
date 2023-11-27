@@ -1,9 +1,20 @@
 from translate import *
+import platform
 import sys
-sys.path.append('../serialMaster/')
-resourcePath = './resources/'
-releasePath = './release'
+if platform.system() == "Windows":    # for Windows
+    sys.path.append('..\\serialMaster\\')
+    resourcePath = '.\\resources\\'
+    releasePath = '.\\release\\'
+elif platform.system() == "Linux":    # for Linux
+    sys.path.append('/usr/share/petoi-opencat/serialMaster/')
+    resourcePath = '/usr/share/petoi-opencat/resources/'
+    releasePath = '/usr/share/petoi-opencat/release/'
+else:
+    sys.path.append('../serialMaster/')
+    resourcePath = './resources/'
+    releasePath = './release/'
 sys.path.append(resourcePath)
+
 from ardSerial import *
 from tkinter import *
 from tkinter import messagebox
@@ -12,7 +23,6 @@ import tkinter.font as tkFont
 import threading
 import random
 import datetime
-import platform
 import os
 
 NyBoard_version = 'NyBoard_V1_2'
@@ -41,6 +51,7 @@ except Exception as e:
 NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
+    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
     'DoF16' : []
 }
 scaleNames = [
@@ -52,7 +63,7 @@ sideNames = ['Left Front', 'Right Front', 'Right Back', 'Left Back']
 
 ports = []
 
-def mkdir(path):
+def makeDirectory(path):
     # delete spaces in the path string
     path = path.strip()
     # delete the '\' at the end of path string
@@ -73,17 +84,17 @@ def mkdir(path):
         return False
 
 if platform.system() == "Windows":    # for Windows
-    seperation = '\\'
+    separation = '\\'
     homeDri = os.getenv('HOMEDRIVE') 
     homePath = os.getenv('HomePath') 
-    configDir = homeDri + '\\' + homePath 
+    configDir = homeDri + homePath
 else:  # for Linux & macOS
-    seperation = '/'
+    separation = '/'
     home = os.getenv('HOME') 
     configDir = home 
-configDir = configDir + seperation +'.config' + seperation +'Petoi'
-mkdir(configDir)
-defaultConfPath = configDir + seperation + 'defaultConfig.txt'
+configDir = configDir + separation +'.config' + separation +'Petoi'
+makeDirectory(configDir)
+defaultConfPath = configDir + separation + 'defaultConfig.txt'
 print(defaultConfPath)
 
 def createImage(frame, imgFile, imgW):

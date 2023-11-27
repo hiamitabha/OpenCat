@@ -1,5 +1,5 @@
-versionNum = '1.1.0'
-dateStr = '2023-08-09'
+versionNum = '1.1.4'
+dateStr = '2023-11-08'
 
 textEN = {
     'lan':'English',
@@ -142,6 +142,7 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     'rbnCamera': 'Camera',
     'Parameters':'Parameters',
     'Main function':'Main function',
+    'Time consuming': 'it will take about 30 seconds',
     'btnFacReset':'Factory Reset',
     'tipFacReset':''' After factory reset, you need to do joint calibration, please refer to: 
  https://docs.petoi.com/joint-calibration ''',
@@ -162,6 +163,7 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
 
     'msgNoneAvrdude': '''There is no avrdude. Please install avrdude at first! For details, please refer to :
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'There is no esptool. Please install esptool at first!',
 
     'titleVersion': 'Version information',
 
@@ -378,6 +380,7 @@ textCN = {
 
     'msgNoneAvrdude': '''没有找到可执行程序文件 avrdude。请先安装 avrdude！详细说明请参考：
     https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
+    'msgNoneEsptool':'没有找到可执行程序文件 esptool。 请先安装esptool！',
 
     'Uploading': '上传',
     'is successully uploaded':' 上传成功！',
@@ -418,6 +421,7 @@ textCN = {
     'RandomMind_Ultrasonic':'随机_超声波',
     'Parameters':'参数',
     'Main function':'主程序',
+    'Time consuming': '大约需要30秒',
     'btnFacReset':'恢复出厂设置',
     'tipFacReset':''' 恢复出厂设置后，你需要重新校准关节舵机，请参考：
  https://docs.petoi.com/joint-calibration ''',
@@ -607,6 +611,7 @@ textCN_TW = {
 
     'msgNoneAvrdude': '''沒有找到可執行程式文件 avrdude。請先安裝 avrdude！詳細說明請參考：
     https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
+    'msgNoneEsptool':'沒有找到可執行程式文件 esptool。請先安裝 esptool！',
 
     'Uploading': '上傳',
     'is successully uploaded':' 上傳成功！',
@@ -647,6 +652,7 @@ textCN_TW = {
     'RandomMind_Ultrasonic':'随機_超聲波',
     'Parameters':'參數',
     'Main function':'主程序',
+    'Time consuming': '大約需要30秒',
     'btnFacReset':'恢復出廠設置',
     'tipFacReset':''' 恢復出廠設置後，你需要重新校準關節舵機，請參考：
  https://docs.petoi.com/joint-calibration ''',
@@ -834,6 +840,7 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Kamera',
     'Parameters':'Parameter',
     'Main function':'Hauptfunktion',
+    'Time consuming': 'es dauert etwa 30 Sekunden',
     'btnFacReset':'Werkseinstellungen zurückgesetzt',
     'tipFacReset':''' Nach dem Zurücksetzen auf die Werkseinstellungen müssen Sie eine gemeinsame Kalibrierung durchführen. 
  Weitere Informationen finden Sie unter: https://docs.petoi.com/joint-calibration ''',
@@ -854,6 +861,7 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
 
     'msgNoneAvrdude': '''Es gibt kein Avrdude. Bitte installieren Sie zuerst avrdude! Einzelheiten finden Sie unter :
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'Es gibt kein Esptool. Bitte installieren Sie zuerst esptool!',
 
     'titleVersion': 'Versionsinformation',
 
@@ -1068,6 +1076,7 @@ textTH = {
     'rbnCamera': 'กล้อง',
     'Parameters':'พารามิเตอร์',
     'Main function':'ฟังก์ชั่นหลัก',
+    'Time consuming': 'จะใช้เวลาประมาณ 30 วินาที',
     'btnFacReset':'รีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน',
     'tipFacReset':''' หลังจากการรีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน คุณต้องทำการปรับเทียบร่วม โปรดดูที่: 
  https://docs.petoi.com/joint-calibration ''',
@@ -1088,6 +1097,7 @@ textTH = {
 
     'msgNoneAvrdude': '''ไม่มี avrdude โปรดติดตั้ง avrdude ในตอนแรก! สำหรับรายละเอียด โปรดดูที่:
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'ไม่มีที่วางมือ โปรดติดตั้ง esptool ในตอนแรก!',
 
     'titleVersion': 'ข้อมูลเวอร์ชัน',
 
@@ -1303,6 +1313,7 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
     'rbnCamera': 'Caméra',
     'Parameters':'Paramètres',
     'Main function':'Fonction principale',
+    'Time consuming': 'cela prendra environ 30 secondes',
     'btnFacReset':'Réinitialisation d\'usine',
     'tipFacReset':''' Après la réinitialisation d'usine, vous devrez effectuer l'étalonnage des articulations. Veuillez vous référer à :
      https://docs.petoi.com/joint-calibration ''',
@@ -1323,6 +1334,7 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
 
     'msgNoneAvrdude': '''Avrdude n'est pas installé. Veuillez d'abord installer avrdude ! Pour plus de détails, veuillez consulter :
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'Il n\'y a pas d\'estool. Veuillez d\'abord installer esptool!',
 
     'title Version': 'Informations sur la version',
     'msgVersion': 'Version : ' + versionNum + '\n'+
@@ -1527,6 +1539,7 @@ textJP={
     'rbnCamera': 'カメラ',
     'Parameters': 'パラメーター',
     'Main function': 'メイン機能',
+    'Time consuming': '約30秒かかります',
     'btnFacReset': '工場出荷時設定に戻す',
     'tipFacReset':'ファクトリーリセット後、関節のキャリブレーションを行う必要があります。詳細は次を参照してください：https://docs.petoi.com/joint-calibration',
     'btnUpgrade':'ファームウェアのアップグレード',
@@ -1541,6 +1554,7 @@ textJP={
     'msgFileDir':'リリースフォルダを選択してください！',
     'msgPort':'正しいシリアルポートを選択してください！',
     'msgNoneAvrdude':'avrdudeがありません。まずavrdudeをインストールしてください！詳細については次を参照してください：https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os',
+    'msgNoneEsptool':'エスプツールはありません。 最初に esptool をインストールしてください。',
     'titleVersion':'バージョン情報',
 
     'msgVersion':'バージョン：' + versionNum + '\n'+
@@ -1744,6 +1758,7 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Telecamera',
     'Parameters':'Parametri',
     'Main function':'Funzione principale',
+    'Time consuming': 'ci vorranno circa 30 secondi',
     'btnFacReset':'Ripristino delle impostazioni di fabbrica',
     'tipFacReset':''' Dopo il ripristino delle impostazioni di fabbrica, 
  è necessario eseguire la calibrazione del giunto, fare riferimento a: 
@@ -1764,6 +1779,7 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'msgPort': 'Si prega di scegliere la porta seriale corretta!',
     'msgNoneAvrdude': '''Non c\'è avrdude. Si prega di installare avrdude all\'inizio! Per i dettagli, fare riferimento a:
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'Non esiste uno strumento esp. Si prega di installare esptool all\'inizio!',
     'titleVersion': 'Informazioni sulla versione',
     'msgVersion': 'Versione: ' + versionNum + '\n' +
     '''Strumento di caricamento del firmware per OpenCat

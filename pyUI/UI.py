@@ -27,7 +27,7 @@ class UI:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
             num = len(lines)
             logger.debug(f"len(lines): {num}")
@@ -35,7 +35,10 @@ class UI:
             model = lines[1]
             self.defaultPath = lines[2]
             self.defaultSwVer = lines[3]
-            self.defaultBdVer = lines[4]
+            if lines[4] == "BiBoard_V0":
+                self.defaultBdVer = "BiBoard_V0_1"
+            else:
+                self.defaultBdVer = lines[4]
             self.defaultMode = lines[5]
             if len(lines) >= 8:
                 self.defaultCreator = lines[6]
@@ -51,7 +54,7 @@ class UI:
             print('Create configuration file')
             self.defaultLan = 'English'
             model = 'Bittle'
-            self.defaultPath = releasePath
+            self.defaultPath = releasePath[:-1]
             self.defaultSwVer = '2.0'
             self.defaultBdVer = NyBoard_version
             self.defaultMode = 'Standard'
@@ -66,13 +69,14 @@ class UI:
 
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
-            self.window.iconbitmap(r'./resources/Petoi.ico')
+            self.window.iconbitmap(resourcePath + 'Petoi.ico')
             self.window.geometry('398x270+800+400')
         elif self.OSname == 'aqua':
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
         else:
-            self.window.tk.call('wm', 'iconphoto', self.window._w, "-default", PhotoImage(file='./resources/Petoi.png'))
+            self.window.tk.call('wm', 'iconphoto', self.window._w, "-default",
+                                PhotoImage(file= resourcePath + 'Petoi.png'))
             self.window.geometry('+800+400')
 
         self.myFont = tkFont.Font(

@@ -38,6 +38,7 @@ axisDisable = {
 NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
+    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
     'DoF16' : []
 }
 jointConfig = {
@@ -77,7 +78,7 @@ class SkillComposer:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
             num = len(lines)
             logger.debug(f"len(lines): {num}")
@@ -99,7 +100,7 @@ class SkillComposer:
         except Exception as e:
             print('Create configuration file')
             self.defaultLan = 'English'
-            self.defaultPath = releasePath
+            self.defaultPath = releasePath[:-1]
             self.defaultSwVer = '2.0'
             self.defaultBdVer = NyBoard_version
             self.defaultMode = 'Standard'
@@ -667,6 +668,8 @@ class SkillComposer:
 
     def changeModel(self, modelName):
         if self.ready and modelName != self.model:
+            if 'Bittle' in modelName:
+                modelName = 'Bittle'
             self.model = copy.deepcopy(modelName)
             self.postureTable = postureDict[self.model]
             self.framePosture.destroy()
@@ -1340,7 +1343,7 @@ class SkillComposer:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             defaultLan = self.defaultLan
             defaultModel = self.model
@@ -1371,7 +1374,7 @@ class SkillComposer:
             print('Create configuration file')
             defaultLan = self.defaultLan
             defaultModel = self.model
-            defaultPath = releasePath
+            defaultPath = releasePath[:-1]
             defaultSwVer = '2.0'
             defaultBdVer = NyBoard_version
             defaultMode = 'Standard'
@@ -1468,7 +1471,7 @@ class SkillComposer:
         print('};')
 
         if file:
-            print(file.name)
+#            print(file.name)
             x = datetime.datetime.now()
             fileData = '# ' + file.name.split('/')[-1].split('.')[0] + '\n'
             fileData += 'Note: '+'You may add a short description/instruction here.\n\n'
@@ -1488,10 +1491,24 @@ class SkillComposer:
                 fileData += ('{:>4},' * frameSize).format(*row)
                 fileData += '\n'
             fileData += '};'
-            with open(file.name, 'w+', encoding="utf-8") as f:
-                f.write(fileData)
-                time.sleep(0.1)
-                f.close()
+
+            # the file in the config directory will be saved automatically
+            filePathName = configDir + separation + 'SkillLibrary' + separation + self.model + separation + file.name.split('/')[-1]
+            logger.debug(f"fileName is: {filePathName}")
+
+            filePathList = [file.name, filePathName]
+            for filePath in filePathList:
+                if filePath == filePathName:
+                    modelDir = configDir + separation + 'SkillLibrary' + separation + self.model
+                    makeDirectory(modelDir)
+                try:
+                    with open(filePath, 'w+', encoding="utf-8") as f:
+                        f.write(fileData)
+                        time.sleep(0.1)
+                    logger.info(f"save successfully: {filePath}")
+                except Exception as e:
+                    logger.info(f"save failed:{e}")
+                    return False
 
         if self.gaitOrBehavior.get() == txt('Behavior'):
             skillData.insert(0, [loopStructure[0], loopStructure[-1], int(self.loopRepeat.get())])

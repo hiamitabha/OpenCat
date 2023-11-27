@@ -17,7 +17,7 @@ import pathlib
 regularW = 14
 language = languageList['English']
 NyBoard_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1', 'NyBoard_V1_2']
-BiBoard_version_list = ['BiBoard_V0']
+BiBoard_version_list = ['BiBoard_V0_1', 'BiBoard_V0_2']
 
 def txt(key):
     return language.get(key, textEN[key])
@@ -51,6 +51,14 @@ class Uploader:
         self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
+        if self.strProduct.get() == 'Bittle X':
+            self.strBoardVersion.set(BiBoard_version_list[0])
+            board_version_list = BiBoard_version_list
+        else:
+            board_version_list = NyBoard_version_list + BiBoard_version_list
+        self.cbBoardVersion['values'] = board_version_list
+        self.updateMode()
+        self.setActiveOption()
 
         self.win.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.win.update()
@@ -68,7 +76,7 @@ class Uploader:
         self.win.configure(menu=self.menuBar)
         
         if self.OSname == 'win32':
-            self.win.iconbitmap(r'./resources/Petoi.ico')
+            self.win.iconbitmap(resourcePath + 'Petoi.ico')
         
         self.helpMenu = Menu(self.menuBar, tearoff=0)
         self.helpMenu.add_command(label=txt('labAbout'), command=self.about)
@@ -90,7 +98,7 @@ class Uploader:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             self.defaultLan = lines[0]
             model = lines[1]
@@ -111,7 +119,7 @@ class Uploader:
             print ('Create configuration file')
             self.defaultLan = 'English'
             model = 'Bittle'
-            strDefaultPath = releasePath
+            strDefaultPath = releasePath[:-1]
             strSwVersion = '2.0'
             strBdVersion = NyBoard_version_list[-1]
             mode = 'Standard'
@@ -149,7 +157,7 @@ class Uploader:
 
         cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', font=12)
         # list of product
-        cbProductList = ['Nybble', 'Bittle']
+        cbProductList = ['Nybble', 'Bittle', 'Bittle X']
         # set default value of Combobox
         cbProduct.set(self.lastSetting[0])
         # set list for Combobox
@@ -185,6 +193,10 @@ class Uploader:
         # set default value of Combobox
         self.cbBoardVersion.set(self.lastSetting[3])
         # set list for Combobox
+        if self.strProduct.get() == 'Bittle X':
+            board_version_list = BiBoard_version_list
+        else:
+            board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
         self.cbBoardVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
 
@@ -203,6 +215,9 @@ class Uploader:
                 cbModeList = self.NybbleNyBoardModes
             else:
                 cbModeList = self.NybbleBiBoardModes
+        elif self.strProduct.get() == 'Bittle X':
+            cbModeList = self.BittleBiBoardModes
+
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
         # set default value of Combobox
         self.cbMode.set(txt(self.lastSetting[4]))
@@ -326,7 +341,14 @@ class Uploader:
         self.updateMode()
 
     def chooseProduct(self, event):
+        if self.strProduct.get() == 'Bittle X':
+            self.strBoardVersion.set(BiBoard_version_list[0])
+            board_version_list = BiBoard_version_list
+        else:
+            board_version_list = NyBoard_version_list + BiBoard_version_list
+        self.cbBoardVersion['values'] = board_version_list
         self.updateMode()
+        self.setActiveOption()
 
     def updateMode(self):
         if self.strProduct.get() == 'Bittle':
@@ -339,6 +361,9 @@ class Uploader:
                 modeList = self.NybbleNyBoardModes
             else:
                 modeList = self.NybbleBiBoardModes
+        if self.strProduct.get() == 'Bittle X':
+            modeList = self.BittleBiBoardModes
+
         self.cbMode['values'] = modeList
 
         if self.strMode.get() not in modeList:
@@ -351,7 +376,7 @@ class Uploader:
         sep = "/"
         listDir = strdir.split("/")
         if (strdir == str(pathlib.Path().resolve())):
-            strdir = sep.join(listDir) + '/release'
+            strdir = sep.join(listDir) + sep + "release"
         else:
             if (listDir[-1].find("release") == -1) and len(listDir) >= 2:
                 while listDir[-1].find("release") == -1 and len(listDir) >= 2:
@@ -366,8 +391,8 @@ class Uploader:
     def open_dir(self):
         # call askdirectory to open file director
         logger.debug(f"{self.strFileDir.get()}")
-        if (self.strFileDir.get()).find(releasePath) != -1:
-            initDir = releasePath
+        if (self.strFileDir.get()).find(releasePath[:-1]) != -1:
+            initDir = releasePath[:-1]
         else:
             initDir = self.strFileDir
         dirpath = filedialog.askdirectory(title=txt('titleFileDir'), initialdir=initDir)
@@ -383,7 +408,7 @@ class Uploader:
             return in_str.encode(encoding)
 
     def WriteInstinctPrompts(self, port):
-        ser = Communication(port, 115200, 0.5)
+        serObj = Communication(port, 115200, 0.5)
         logger.info(f"Connect to usb serial port: {port}.")
         strSoftwareVersion = self.strSoftwareVersion.get()
         promptJointCalib = {
@@ -414,8 +439,8 @@ class Uploader:
         prompStr = ""
         while True:
             time.sleep(0.01)
-            if ser.main_engine.in_waiting > 0:
-                x = str(ser.main_engine.readline())
+            if serObj.main_engine.in_waiting > 0:
+                x = str(serObj.main_engine.readline())
                 prompStr = x[2:-1]
                 logger.debug(f"new line:{x}")
                 if x != "":
@@ -429,7 +454,7 @@ class Uploader:
                         elif x.find("Calibrate") != -1:
                             prompt = promptIMU
                         elif x.find("assurance") != -1:    # for BiBoard it need to be modified later
-                            ser.Send_data(self.encode("n"))
+                            serObj.Send_data(self.encode("n"))
                             continue
                         if progress > 0 and retMsg == True:
                             self.strStatus.set(promptList[progress-1]['result'])
@@ -438,9 +463,9 @@ class Uploader:
                         if retMsg:
                             self.strStatus.set(prompt['operating'])
                             self.statusBar.update()
-                            ser.Send_data(self.encode("Y"))
+                            serObj.Send_data(self.encode("Y"))
                         else:
-                            ser.Send_data(self.encode("n"))
+                            serObj.Send_data(self.encode("n"))
                             if progress == len(promptList) - 1:
                                 break
                         progress += 1
@@ -448,6 +473,8 @@ class Uploader:
                         if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
                             self.strStatus.set(promptIMU['result'])
                             self.statusBar.update()
+                            if strBoardVersion in NyBoard_version_list:
+                                messagebox.showinfo(title=None, message=txt('parameterFinish'))
                             break
                     else:
                         if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
@@ -466,7 +493,7 @@ class Uploader:
                         if counter == 10:
                             break
 
-        ser.Close_Engine()
+        serObj.Close_Engine()
         logger.info("close the serial port.")
         self.force_focus()
 
@@ -482,7 +509,7 @@ class Uploader:
         with open(filename, "w", encoding="utf-8") as f:
             lines = '\n'.join(self.configuration)+'\n'
             f.writelines(lines)
-            f.close()
+            # f.close()
 
     def autoupload(self):
         logger.info(f"lastSetting: {self.lastSetting}.")
@@ -505,7 +532,11 @@ class Uploader:
         else:
             pathBoardVersion = strBoardVersion
 
-        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + pathBoardVersion + '/'
+        if strProd == "Bittle X":
+            strProdPath = "Bittle"
+        else:
+            strProdPath = strProd
+        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProdPath + '/' + pathBoardVersion + '/'
 
         if self.OSname == 'x11' or self.OSname == 'aqua':
             port = '/dev/' + self.strPort.get()
@@ -539,7 +570,7 @@ class Uploader:
                 # t = threading.Thread(target=self.progressiveDots, args=(status,))
                 # t.start()
                 if self.OSname == 'win32':
-                    avrdudePath = './resources/avrdudeWin/'
+                    avrdudePath = resourcePath + 'avrdudeWin/'
                 elif self.OSname == 'x11':     # Linux
                     avrdudePath = '/usr/bin/'
                     path = pathlib.Path(avrdudePath + 'avrdude')
@@ -550,7 +581,7 @@ class Uploader:
                     # avrdudeconfPath = '/etc/avrdude/'      # Fedora / CentOS
                     avrdudeconfPath = '/etc/'            # Debian / Ubuntu
                 else:
-                    avrdudePath = './resources/avrdudeMac/'
+                    avrdudePath = resourcePath + 'avrdudeMac/'
                 print()
                 try:
                     if self.OSname == 'x11':     # Linuxself.OSname == 'x11':     # Linux
@@ -574,10 +605,6 @@ class Uploader:
 
                 if s == 0:
                     self.WriteInstinctPrompts(port)
-                    if not self.bFacReset:
-                        messagebox.showinfo(title=None, message=txt('parameterFinish'))
-                    else:
-                        pass
                 else:
                     pass
         elif strBoardVersion in BiBoard_version_list:
@@ -591,12 +618,19 @@ class Uploader:
 
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
             print(filename)
-            self.strStatus.set(txt('Uploading') + txt('Main function') + '...' )
+            self.strStatus.set(txt('Uploading') + txt('Main function') + ', ' + txt('Time consuming') + '...' )
             self.win.update()
-            if self.OSname == 'win32':
-                esptoolPath = './resources/esptoolWin/'
-            else:
-                esptoolPath = './resources/esptoolMac/'
+            if self.OSname == 'win32':   # Windows
+                esptoolPath = resourcePath + 'esptoolWin/'
+            elif self.OSname == 'x11':  # Linux
+                esptoolPath = '/usr/bin/'
+                path = pathlib.Path(esptoolPath + 'esptool')
+                if not path.exists():
+                    messagebox.showwarning(txt('Warning'), txt('msgNoneEsptool'))
+                    self.force_focus()  # force the main interface to get focus
+                    return False
+            else:    # Mac
+                esptoolPath = resourcePath + 'esptoolMac/'
             print()
             try:
                 check_call(esptoolPath + 'esptool --chip esp32 --port %s --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size 16MB 0x1000 %s 0x8000 %s 0xe000 %s 0x10000 %s' % \
