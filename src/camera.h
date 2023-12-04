@@ -64,6 +64,21 @@ void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
 
 #define WALK  //let the robot move its body to follow people rather than sitting at the original position \
               // it works the best on the table so the robot doesn't need to loop upward.
+
+int colorBehavior(int color) {
+   if (color == MU_COLOR_RED) {
+       PTLF("Balance");
+       tQueue->addTask('k', "balance");
+       return 1;
+   } else {
+       PTLF("Sit");
+       tQueue->addTask('k', "sit");
+       tQueue->addTask('i', "");
+       return 1;
+   } 
+   return 0;
+}
+
 void cameraBehavior(int xCoord, int yCoord, int width) {
   showRecognitionResult(xCoord, yCoord, width);
 #ifdef WALK
@@ -160,13 +175,13 @@ SoftwareSerial mySerial(RX_PIN, TX_PIN);
 #endif
 
 MuVisionSensor *Mu;
-int skip = 1;  //, counter; //an efforts to reduce motion frequency without using delay. set skip >1 to take effect
+int skip = 1;  //counter; //an efforts to reduce motion frequency without using delay. set skip >1 to take effect
 int i2cdelay = 3;
 long noResultTime = 0;
-MuVisionType object[] = { VISION_BODY_DETECT, VISION_BALL_DETECT, VISION_COLOR_RECOGNITION};
-String objectName[] = { "body", "ball", "color" };
+MuVisionType object[] = {VISION_COLOR_RECOGNITION};
+String objectName[] = {"color" };
 int objectIdx = 0;
-int lastBallType;
+int lastCommandTime = 0;
 int lastColorType;
 bool firstConnection = true;
 
@@ -216,24 +231,7 @@ void read_MuCamera() {
     yCoord = (int)(*Mu).GetValue(object[objectIdx], kYValue);
     width = (int)(*Mu).GetValue(object[objectIdx], kWidthValue);
     // height = (int)(*Mu).GetValue(VISION_BODY_DETECT, kHeightValue);
-    if (objectIdx == 1) { // Implementing logic if a ball is first detected
-      int ballType = (*Mu).GetValue(object[objectIdx], kLabel);
-      if (lastBallType != ballType) {
-        switch ((*Mu).GetValue(object[objectIdx], kLabel)) {  // get vision result: label value
-          case MU_BALL_TABLE_TENNIS:
-            PTLF("table tennis");
-            break;
-          case MU_BALL_TENNIS:
-            PTLF("tennis");
-            break;
-          default:
-            PTLF("unknow ball type");
-            break;
-        }
-        lastBallType = ballType;
-      }
-      cameraBehavior(xCoord, yCoord, width);
-    } else if (objectIdx == 2) { // Implementing logic if color is detected
+    if (objectIdx == 0) { // Implementing logic if color is detected
        int color = (*Mu).GetValue(object[objectIdx], kLabel);
        if (color != lastColorType) { 
          switch (color) {
@@ -266,6 +264,11 @@ void read_MuCamera() {
             break;
          }
          lastColorType = color;
+         if (millis() - lastCommandTime > 5000) { // Issue the next color related command only if 5 seconds has elasped since the last color related command was issued
+            if (colorBehavior(color) == 1) {
+               lastCommandTime = millis();
+            }
+         }
        }
     } 
     FPS();
